@@ -1,0 +1,29 @@
+export default function Dashboard() {
+  return (
+    <div style={{ maxWidth: 700, margin: "0 auto", padding: 24 }}>
+      
+      <h1>🧠 Study OS</h1>
+
+      {/* Google Drive */}
+      <button>📁 Connect Google Drive</button>
+
+      {/* Search */}
+      <input
+        placeholder="Search topic or paste notes..."
+        style={{ width: "100%", padding: 12, marginTop: 20 }}
+      />
+
+      {/* Notes */}
+      <textarea
+        placeholder="Paste notes or import from Drive..."
+        style={{ width: "100%", height: 150, marginTop: 10 }}
+      />
+
+      {/* Main CTA */}
+      <button style={{ marginTop: 20, width: "100%" }}>
+        🚀 Generate Study Session
+      </button>
+
+    </div>
+  );
+}
