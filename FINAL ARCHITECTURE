@@ -1,0 +1,30 @@
+ultra-study-os/
+│
+├── app/
+│   ├── page.tsx
+│   ├── dashboard/page.tsx
+│   ├── study/page.tsx
+│
+│   ├── api/
+│   │   ├── ai/explain/route.ts
+│   │   ├── flashcards/route.ts
+│   │   ├── search/route.ts
+│   │   ├── drive/import/route.ts
+│   │   ├── progress/route.ts
+│
+├── components/
+│   ├── SearchBar.tsx
+│   ├── Timer.tsx
+│   ├── Flashcards.tsx
+│   ├── AITutor.tsx
+│
+├── lib/
+│   ├── openai.ts
+│   ├── prisma.ts
+│   ├── googleDrive.ts
+│
+├── prisma/
+│   └── schema.prisma
+│
+├── .env
+└── package.json
