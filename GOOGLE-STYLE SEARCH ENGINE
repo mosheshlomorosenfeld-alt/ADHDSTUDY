@@ -1,0 +1,23 @@
+const topics = [
+  "Photosynthesis",
+  "World War 1",
+  "DNA Structure",
+  "Gravity",
+  "Algebra",
+  "Human Brain",
+  "Electricity"
+];
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const q = searchParams.get("q") || "";
+
+  const results = topics.filter((t) =>
+    t.toLowerCase().includes(q.toLowerCase())
+  );
+
+  return Response.json({
+    success: true,
+    data: results
+  });
+}
