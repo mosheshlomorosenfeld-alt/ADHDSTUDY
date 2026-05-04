@@ -1,27 +1,57 @@
+"use client";
+
+import { useState } from "react";
+
 export default function Dashboard() {
+  const [topic, setTopic] = useState("");
+  const [notes, setNotes] = useState("");
+  const [results, setResults] = useState([]);
+
+  async function searchTopic(q: string) {
+    setTopic(q);
+
+    const res = await fetch(`/api/search?q=${q}`);
+    const data = await res.json();
+
+    setResults(data.data || []);
+  }
+
   return (
-    <div style={{ maxWidth: 700, margin: "0 auto", padding: 24 }}>
-      
-      <h1>🧠 Study OS</h1>
+    <div style={{ maxWidth: 750, margin: "0 auto", padding: 20 }}>
 
-      {/* Google Drive */}
-      <button>📁 Connect Google Drive</button>
+      <h1>🧠 Ultra Study OS</h1>
 
-      {/* Search */}
+      {/* GOOGLE-STYLE SEARCH */}
       <input
-        placeholder="Search topic or paste notes..."
-        style={{ width: "100%", padding: 12, marginTop: 20 }}
+        placeholder="Search topic (AI Study Mode)..."
+        value={topic}
+        onChange={(e) => searchTopic(e.target.value)}
+        style={{ width: "100%", padding: 12 }}
       />
 
-      {/* Notes */}
+      {/* DROPDOWN */}
+      {results.map((r: string, i: number) => (
+        <div key={i} onClick={() => setTopic(r)}>
+          🔎 {r}
+        </div>
+      ))}
+
+      {/* GOOGLE DRIVE */}
+      <button style={{ marginTop: 10 }}>
+        📁 Import from Google Drive
+      </button>
+
+      {/* NOTES */}
       <textarea
-        placeholder="Paste notes or import from Drive..."
+        placeholder="Paste notes or imported content..."
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
         style={{ width: "100%", height: 150, marginTop: 10 }}
       />
 
-      {/* Main CTA */}
-      <button style={{ marginTop: 20, width: "100%" }}>
-        🚀 Generate Study Session
+      {/* MAIN CTA */}
+      <button style={{ marginTop: 15, width: "100%" }}>
+        🚀 Generate AI Study Session
       </button>
 
     </div>
