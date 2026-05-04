@@ -1,0 +1,25 @@
+import { openai } from "@/lib/openai";
+
+export async function POST(req: Request) {
+  const { topic, notes } = await req.json();
+
+  const res = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      {
+        role: "system",
+        content:
+          "You are an AI tutor optimized for ADHD and dyslexia learners. Keep it structured and simple."
+      },
+      {
+        role: "user",
+        content: `${topic}\n\n${notes}`
+      }
+    ]
+  });
+
+  return Response.json({
+    success: true,
+    data: res.choices[0].message.content
+  });
+}
