@@ -1,0 +1,14 @@
+export function Timer() {
+  return (
+    <div>
+      <h2>Focus Session</h2>
+      <h1>25:00</h1>
+
+      <button>Start</button>
+      <button>Break</button>
+
+      <input placeholder="Study minutes" />
+      <input placeholder="Break minutes" />
+    </div>
+  );
+}
