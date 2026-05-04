@@ -1,0 +1,12 @@
+model User {
+  id    String @id @default(cuid())
+  email String @unique
+  plan  String @default("free")
+}
+
+model StudySession {
+  id       String @id @default(cuid())
+  userId   String
+  duration Int
+  xp       Int
+}
