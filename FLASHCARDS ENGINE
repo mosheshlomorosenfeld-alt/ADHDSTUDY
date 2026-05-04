@@ -1,0 +1,17 @@
+export async function POST(req: Request) {
+  const { notes } = await req.json();
+
+  const cards = notes.split("\n").map((line: string) => {
+    const [front, back] = line.split("-");
+
+    return {
+      front: front?.trim(),
+      back: back?.trim() || "Review this concept"
+    };
+  });
+
+  return Response.json({
+    success: true,
+    data: cards
+  });
+}
