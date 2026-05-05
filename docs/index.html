@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ADHD Study Companion</title>
+  <style>
+    :root{--bg:#070c18;--panel:#111827;--line:#273449;--text:#e5e7eb;--muted:#94a3b8;--accent:#38bdf8;--accent2:#a78bfa}
+    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top,#1e293b 0%,var(--bg) 48%);color:var(--text);font:15px/1.45 Inter,system-ui,sans-serif}
+    .top{position:sticky;top:0;background:#08101d;border-bottom:1px solid var(--line);padding:10px 14px;z-index:20}
+    .hidden{display:none!important}.container{max-width:1150px;margin:0 auto;padding:14px}.card{background:linear-gradient(165deg,#101928,#101725);border:1px solid #334155;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+    .hero{padding:22px}.hero h1{margin:.2rem 0;color:#e2e8f0}.hero p{margin:.4rem 0;color:var(--muted)}
+    .auth-layout{display:grid;gap:14px;grid-template-columns:1.1fr .9fr}.auth-box{padding:16px}.feature{padding:14px;margin-top:8px;border:1px solid #334155;border-radius:12px;background:#0c1628}
+    .grid{display:grid;gap:12px;grid-template-columns:repeat(12,1fr)}
+    .col-6{grid-column:span 6}.col-12{grid-column:span 12}
+    @media(max-width:920px){.auth-layout{grid-template-columns:1fr}.col-6,.col-12{grid-column:span 12}}
+    input,textarea,button,select{width:100%;margin-top:.5rem;background:#0a1426;color:var(--text);border:1px solid #3a4c66;border-radius:12px;padding:.7rem .75rem}
+    button{cursor:pointer;font-weight:600}button:hover{border-color:var(--accent)} .row{display:flex;gap:8px}.row>*{flex:1}
+    .min{font-size:.87rem;color:var(--muted)} .timer{font-size:2.2rem;color:var(--accent);text-align:center;font-weight:800}
+    .badge{display:inline-block;padding:.18rem .55rem;border-radius:999px;border:1px solid #46546c;background:#0e1c31;color:#bfdbfe;font-size:.76rem}
+    .tool{padding:14px}.tool h3{margin:.2rem 0 .5rem}
+    .locked{filter:blur(2.7px) saturate(.8);pointer-events:none}.gate{position:relative}.gate-tip{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;background:rgba(3,8,20,.5);border:1px dashed #475569;border-radius:12px;opacity:0;transition:.15s}.gate:hover .gate-tip{opacity:1}
+  
+.tab-pane{display:none}.tab-pane.active{display:block}.tab-btn{white-space:nowrap}
+  </style>
+</head>
+<body>
+<div class="top">🔔 Welcome to ADHD Study Companion <span id="notif" class="min">Ready.</span></div>
+
+<div style="margin:8px 0 14px"><a href="index.html">Home</a> · <a href="about.html">About</a> · <a href="tools.html">Tools</a> · <a href="sources.html">Sources</a> · <a href="pricing.html">Pricing</a></div>
+
+<div class="card" style="padding:10px;margin:0 0 12px">
+  <div class="row">
+    <button class="tab-btn" data-tab="tab-dashboard">Dashboard</button>
+    <button class="tab-btn" data-tab="tab-memory">Memory Lab</button>
+    <button class="tab-btn" data-tab="tab-retype">Retype Drill</button>
+    <button class="tab-btn" data-tab="tab-sources">Sources</button>
+    <button class="tab-btn" data-tab="tab-settings">Settings</button>
+  </div>
+</div>
+<div id="authPage" class="container">
+  <section id="tab-dashboard" class="card hero tab-pane">
+    <h1>ADHD Study Companion</h1>
+    <p class="min">Version: v2 UI refresh • New PR track</p>
+    <p>Designed for focus, memory, and fast studying with supportive tools for Hebrew/Aramaic workflows.</p>
+  </section>
+
+  <div class="auth-layout" style="margin-top:12px">
+    <section class="card auth-box tab-pane" id="tab-settings">
+      <h2 style="margin:.2rem 0" data-i18n="signin">Sign in</h2>
+      <div class="row"><select id="lang"><option value="en">English</option><option value="he">עברית</option><option value="arc">Aramaic Support</option></select><button id="toggleRtl">RTL/LTR</button></div>
+      <textarea id="firebaseConfig" placeholder="Paste Firebase config JSON once"></textarea>
+      <div class="row"><button id="saveCfg">Save Config</button><button id="initAuth">Init Auth</button></div>
+      <input id="email" type="email" placeholder="Email" /><input id="password" type="password" placeholder="Password" />
+      <div class="row"><button id="signupEmail">Create Account</button><button id="loginEmail">Login</button></div>
+      <div class="row"><button id="forgotPassword">Forgot Password</button><button id="logout">Logout</button></div>
+      <div class="row"><button id="loginGoogle">Google</button><button id="loginGithub">GitHub</button></div>
+      <div id="authStatus" class="min">Not initialized.</div>
+    </section>
+
+    <section class="card auth-box tab-pane" id="tab-sources">
+      <h3 style="margin:.2rem 0">What you get</h3>
+      <div class="feature">✅ Focus timer + break cycles</div>
+      <div class="feature">✅ Memory tools + retyping drills</div>
+      <div class="feature">✅ Jewish topic source routing + YUTorah</div>
+      <div class="feature">✅ Multi-language support (EN / HE / ARC)</div>
+    </section>
+  </div>
+</div>
+
+<div id="appPage" class="container hidden">
+  <section class="card tool col-12" style="margin-bottom:12px">
+    <div class="row"><div class="badge" id="roleBadge">Role: free</div><button id="openUpgrade" style="max-width:220px">Upgrade to Pro</button><button id="logout2" style="max-width:120px">Logout</button></div>
+  </section>
+
+  <div class="grid">
+    <section class="card tool col-6"><h3 data-i18n="sources_notes">Sources + Notes</h3><input id="topic" placeholder="Topic"/><textarea id="notes" placeholder="Paste notes..."></textarea><div class="row"><button id="buildSummary">Build Summary</button><button id="saveNowStudy">Save</button></div><div id="summary" class="min"></div></section>
+    <section class="card tool col-6"><h3 data-i18n="jewish_sources">Jewish Topic Sources</h3><p class="min" data-i18n="jewish_hint">If topic is Jewish/Torah related, we prioritize reliable Torah sources.</p><div class="row"><button id="detectJewish">Detect Topic</button><button id="openJewishSources">Open Sources</button></div><div id="jewishStatus" class="min">Not detected yet.</div><div id="jewishLinks" class="min"></div><input id="shiurQuery" placeholder="Search YUTorah shiur keyword"/><button id="openYUTorah">Open YUTorah Search</button></section>
+    <section class="card tool col-6"><h3>Focus Timer</h3><div class="row"><input id="studyM" type="number" value="25" min="1"/><input id="breakM" type="number" value="5" min="1"/></div><div id="timer" class="timer">25:00</div><div class="row"><button id="startPause">Start</button><button id="skip">Skip</button><button id="reset">Reset</button></div><div id="mode" class="min">Mode: Study</div></section>
+    <section id="tab-memory" class="card tool col-6 gate tab-pane"><h3>Memory Tools <span class="badge">Pro</span></h3><div id="memoryGateTip" class="gate-tip">Upgrade to unlock unlimited use</div><div id="memoryGateContent"><div class="row"><button id="buildFlashRecall">Recall Qs</button><button id="buildMnemonics">Mnemonics</button><button id="buildReviewPlan">Review Plan</button></div><div id="recallArea" class="min"></div><div id="mnemonicArea" class="min"></div><div id="reviewPlanArea" class="min"></div></div><button id="demoMemory">Try 1 Demo</button></section>
+    <section id="tab-retype" class="card tool col-12 tab-pane"><h3>Retyping Practice</h3><div class="row"><button id="startRetype">Start</button><button id="checkRetype">Check</button><button id="nextRetype">Next</button></div><div id="targetSentence" class="min"></div><textarea id="retypeInput" placeholder="Retype from memory..."></textarea><div id="retypeScore" class="min"></div></section>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+import { getAuth, GoogleAuthProvider, GithubAuthProvider, signInWithPopup, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
+import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+const $=id=>document.getElementById(id), notify=(m)=>$('notif').textContent=' • '+m; const state={app:null,auth:null,db:null,user:null,role:localStorage.getItem('role')||'free'}; const ADMIN_EMAIL='admin@adhdstudy.app', ADMIN_PASS='AdminPro2026!'; const demo=JSON.parse(localStorage.getItem('demoUsage')||'{"memory":0}');
+const i18n={en:{signin:'Sign in',sources_notes:'Sources + Notes',jewish_sources:'Jewish Topic Sources',jewish_hint:'If topic is Jewish/Torah related, we prioritize reliable Torah sources.'},he:{signin:'התחברות',sources_notes:'מקורות + הערות',jewish_sources:'מקורות ללימוד יהדות',jewish_hint:'אם הנושא יהודי/תורני, נעדיף מקורות תורניים אמינים.'},arc:{signin:'עולו',sources_notes:'מקורין והערות',jewish_sources:'מקורין ללימודא',jewish_hint:'בנושא דתורייתא נשתמש במקורות מהימנין.'}};
+function applyLang(l){document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;el.textContent=i18n[l]?.[k]||i18n.en[k]||el.textContent});localStorage.setItem('lang',l)}
+$('lang').value=localStorage.getItem('lang')||'en';applyLang($('lang').value);$('lang').onchange=e=>applyLang(e.target.value);$('toggleRtl').onclick=()=>{document.documentElement.dir=document.documentElement.dir==='rtl'?'ltr':'rtl'};
+function isPro(){return state.role==='pro'||state.role==='admin'};function showApp(v){$('authPage').classList.toggle('hidden',v);$('appPage').classList.toggle('hidden',!v)};function setRole(r){state.role=r;localStorage.setItem('role',r);$('roleBadge').textContent='Role: '+r;$('memoryGateContent').classList.toggle('locked',!isPro()&&demo.memory>=1);$('demoMemory').classList.toggle('hidden',isPro()||demo.memory>=1)}
+function loadCfg(){try{return JSON.parse(localStorage.getItem('firebase_cfg')||'{}')}catch{return {}}}
+$('firebaseConfig').value=localStorage.getItem('firebase_cfg')||'';$('saveCfg').onclick=()=>{try{JSON.parse($('firebaseConfig').value);localStorage.setItem('firebase_cfg',$('firebaseConfig').value);notify('Config saved')}catch{notify('Invalid config')}};
+$('initAuth').onclick=()=>{try{const cfg=loadCfg();if(!cfg.apiKey) throw new Error('apiKey missing');state.app=initializeApp(cfg);state.auth=getAuth(state.app);state.db=getFirestore(state.app);onAuthStateChanged(state.auth,u=>{state.user=u;if(u){setRole(u.email===ADMIN_EMAIL?'admin':'pro');showApp(true)}else{showApp(false);setRole('free')}});$('authStatus').textContent='Auth initialized';}catch(e){$('authStatus').textContent='Init failed: '+e.message}};
+$('signupEmail').onclick=async()=>{if(!state.auth)return;try{await createUserWithEmailAndPassword(state.auth,$('email').value.trim(),$('password').value);setRole('pro')}catch{notify('Signup failed')}};
+$('loginEmail').onclick=async()=>{if(!state.auth)return;const e=$('email').value.trim(),p=$('password').value;if(e===ADMIN_EMAIL&&p===ADMIN_PASS){setRole('admin');showApp(true);return;}try{await signInWithEmailAndPassword(state.auth,e,p);setRole(e===ADMIN_EMAIL?'admin':'pro');showApp(true)}catch{notify('Login failed')}};
+$('forgotPassword').onclick=async()=>{if(!state.auth)return;try{await sendPasswordResetEmail(state.auth,$('email').value.trim());notify('Reset email sent')}catch{notify('Reset failed')}};
+$('loginGoogle').onclick=async()=>{if(!state.auth)return;try{await signInWithPopup(state.auth,new GoogleAuthProvider());setRole('pro');showApp(true)}catch{notify('Google login failed')}};
+$('loginGithub').onclick=async()=>{if(!state.auth)return;try{await signInWithPopup(state.auth,new GithubAuthProvider());setRole('pro');showApp(true)}catch{notify('GitHub login failed')}};
+async function doLogout(){if(state.auth) await signOut(state.auth);setRole('free');showApp(false)} $('logout').onclick=doLogout;$('logout2').onclick=doLogout;
+const jewishDomains=['https://www.chabad.org','https://www.sefaria.org','https://www.alhatorah.org','https://www.themercava.com','https://www.koltorah.org'];
+function isJewishTopic(t){return /torah|talmud|gemara|mishna|halacha|tanakh|rashi|rambam|parsha|jewish|hebrew|aramaic|שבת|גמרא|תורה|הלכה|משנה/i.test(t)}
+$('detectJewish').onclick=()=>{const t=($('topic').value+' '+$('notes').value).slice(0,1200);const yes=isJewishTopic(t);$('jewishStatus').textContent=yes?'Detected Jewish/Torah study topic ✅':'Not detected as Jewish topic yet.';if(yes)$('jewishLinks').innerHTML=jewishDomains.map(d=>`• <a href='${d}' target='_blank'>${d}</a>`).join('<br>')};
+$('openJewishSources').onclick=()=>{if(!isJewishTopic(($('topic').value+' '+$('notes').value))) return; jewishDomains.forEach(u=>window.open(u,'_blank'))}; $('openYUTorah').onclick=()=>window.open(`https://www.yutorah.org/search/?q=${encodeURIComponent(($('shiurQuery').value||$('topic').value||'torah').trim())}`,'_blank');
+$('openUpgrade').onclick=()=>alert('Upgrade to Pro to unlock unlimited premium tools.'); $('demoMemory').onclick=()=>{demo.memory=1;localStorage.setItem('demoUsage',JSON.stringify(demo));setRole(state.role)};
+$('buildSummary').onclick=()=>{$('summary').innerHTML=$('notes').value?$('notes').value.split(/\n|\.\s+/).filter(Boolean).slice(0,8).map((x,i)=>`${i+1}. ${x.trim()}`).join('<br>'):'Add notes first.'};
+function sentencePool(){return $('notes').value.split(/\n|\.\s+/).map(x=>x.trim()).filter(x=>x.length>20)}; const canUseMemory=()=>isPro()||demo.memory===1;
+$('buildFlashRecall').onclick=()=>{if(!canUseMemory())return;const s=sentencePool().slice(0,6);$('recallArea').innerHTML=s.map((x,i)=>`Q${i+1}: Explain "${x.slice(0,70)}..."`).join('<br>')};
+$('buildMnemonics').onclick=()=>{if(!canUseMemory())return;const s=sentencePool().slice(0,4);$('mnemonicArea').innerHTML=s.map((x,i)=>{const w=x.split(/\s+/).slice(0,6);return `M${i+1}: <b>${w.map(a=>a[0]?.toUpperCase()||'').join('')}</b>`}).join('<br>')};
+$('buildReviewPlan').onclick=()=>{if(!canUseMemory())return;const s=sentencePool().slice(0,3);$('reviewPlanArea').innerHTML=s.map((x,i)=>`Item ${i+1}: ${x.slice(0,55)}...<br>Today • +1d • +3d • +7d`).join('<hr style="border-color:#273449">')};
+let mode='study',remain=25*60,run=false,intv=null;function draw(){const mm=String(Math.floor(remain/60)).padStart(2,'0'),ss=String(remain%60).padStart(2,'0');$('timer').textContent=`${mm}:${ss}`;$('mode').textContent=`Mode: ${mode==='study'?'Study':'Break'}`}; function flip(){if(mode==='study'){mode='break';remain=(+$('breakM').value||5)*60}else{mode='study';remain=(+$('studyM').value||25)*60}draw()}
+$('startPause').onclick=()=>{run=!run;$('startPause').textContent=run?'Pause':'Start';if(run){clearInterval(intv);intv=setInterval(()=>{remain--;if(remain<=0)flip();draw()},1000)}else clearInterval(intv)}; $('skip').onclick=flip; $('reset').onclick=()=>{mode='study';remain=(+$('studyM').value||25)*60;run=false;clearInterval(intv);$('startPause').textContent='Start';draw()};
+let retype=[],idx=0,target='';function pick(){if(!retype.length){$('targetSentence').textContent='No long sentences yet.';return;}target=retype[idx%retype.length];$('targetSentence').textContent='Memorize: '+target;setTimeout(()=>{$('targetSentence').textContent='Retype now.'},4500);$('retypeInput').value=''}
+$('startRetype').onclick=()=>{retype=sentencePool();idx=0;pick()}; $('nextRetype').onclick=()=>{idx++;pick()}; $('checkRetype').onclick=()=>{const a=target.toLowerCase().split(/\s+/),b=$('retypeInput').value.toLowerCase().split(/\s+/);let h=0;for(const w of a) if(b.includes(w)) h++;$('retypeScore').innerHTML=`Accuracy: <b>${Math.round((2*h/(a.length+b.length||1))*100)}%</b>`};
+async function saveCloud(){if(!state.user||!state.db)return;await setDoc(doc(state.db,'users',state.user.uid,'app','state'),{topic:$('topic').value,notes:$('notes').value,studyM:$('studyM').value,breakM:$('breakM').value,lang:$('lang').value,updatedAt:new Date().toISOString()},{merge:true})}
+$('saveNowStudy').onclick=saveCloud; ['topic','notes','studyM','breakM','lang'].forEach(id=>$(id).addEventListener('input',()=>setTimeout(saveCloud,700)));
+
+const tabButtons=[...document.querySelectorAll('.tab-btn')];
+function showTab(id){document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active');}
+tabButtons.forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+showTab('tab-dashboard');
+
+setRole(state.role); draw();
+</script>
+</body>
+</html>
