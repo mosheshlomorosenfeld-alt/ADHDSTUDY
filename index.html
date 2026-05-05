@@ -68,6 +68,118 @@
     <section class="card tool col-12"><h3>Retyping Practice</h3><div class="row"><button id="startRetype">Start</button><button id="checkRetype">Check</button><button id="nextRetype">Next</button></div><div id="targetSentence" class="min"></div><textarea id="retypeInput" placeholder="Retype from memory..."></textarea><div id="retypeScore" class="min"></div></section>
   </div>
 </div>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ADHD Study Companion</title>
+<style>
+:root{--bg:#0b1220;--panel:#111827;--line:#273449;--text:#e5e7eb;--muted:#94a3b8;--accent:#38bdf8;--ok:#34d399;--warn:#fbbf24;--bad:#f87171}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 Inter,system-ui,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:12px}.bar{position:sticky;top:0;z-index:20;background:#08101d;border-bottom:1px solid var(--line);padding:10px 12px}
+.min{color:var(--muted);font-size:.87rem}.grid{display:grid;grid-template-columns:1fr;gap:10px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+@media (min-width:900px){.grid{grid-template-columns:1fr 1fr}}
+input,textarea,button{width:100%;background:#0a1426;color:var(--text);border:1px solid #334155;border-radius:10px;padding:.6rem .7rem;margin-top:.45rem}
+button{cursor:pointer}.row{display:flex;gap:8px}.row>*{flex:1}
+#results{max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:10px;margin-top:6px}.result{padding:8px;border-bottom:1px solid #1f2b3f;cursor:pointer}.result:hover{background:#0b1b34}
+.badge{display:inline-block;padding:.1rem .4rem;border:1px solid var(--line);border-radius:999px;font-size:.75rem;color:var(--muted);margin-right:.4rem}
+.timer{font-size:2rem;text-align:center;color:var(--accent);font-weight:700}.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}.hidden{display:none}
+iframe{width:100%;height:250px;border:1px solid var(--line);border-radius:10px;background:#0a1426;margin-top:.5rem}
+</style>
+</head>
+<body>
+<div class="bar">🔔 Welcome to "ADHD Study Companion" <span id="notif" class="min">Ready.</span></div>
+<div class="wrap"><div class="grid">
+
+<section class="panel">
+  <h3 style="margin:0">Account, Admin & Theme</h3>
+  <p class="min">Admin demo login: <b>admin@adhdstudy.app</b> / <b>AdminPro2026!</b> (local unlock for Pro tools).</p>
+  <textarea id="firebaseConfig" placeholder='Paste Firebase config JSON'></textarea>
+  <div class="row"><button id="saveCfg">Save Config</button><button id="initAuth">Init Auth</button></div>
+  <input id="email" type="email" placeholder="Email" /><input id="password" type="password" placeholder="Password (6+ chars)" />
+  <div class="row"><button id="signupEmail">Create Account</button><button id="loginEmail">Login Email</button></div>
+  <div class="row"><button id="forgotPassword">Forgot Password</button><button id="logout">Logout</button></div>
+  <div class="row"><button id="loginGoogle">Login Google</button><button id="loginGithub">Login GitHub</button></div>
+  <div class="row"><button id="adminLogin">Admin Demo Login</button><button id="loadCloud">Load Cloud Save</button></div>
+  <label class="min">Theme accent color</label><input id="themeColor" type="color" value="#38bdf8" />
+  <div id="authStatus" class="min">Not initialized.</div>
+</section>
+
+<section class="panel">
+  <h3 style="margin:0">Verified Search + Sources</h3>
+  <input id="search" placeholder="Search topic from reliable indexes" />
+  <div id="results" class="hidden"></div>
+  <div class="row"><button id="addSourceLink">Add Source Link</button><button id="uploadAny">Upload Files</button></div>
+  <input id="anyFile" type="file" multiple hidden />
+  <textarea id="sourceLink" placeholder="Paste source link (Gimkit, Quizlet, NotebookLM, article)"></textarea>
+  <div id="sourceList" class="min">No sources yet.</div>
+</section>
+
+<section class="panel">
+  <h3 style="margin:0">Study Workspace</h3>
+  <input id="topic" placeholder="Topic" />
+  <textarea id="notes" placeholder="Paste notes or extracted text..."></textarea>
+  <div class="row"><button id="buildSummary">Build Summary</button><button id="saveNowStudy">Save Study Notes</button></div>
+  <div id="summary" class="min">Summary appears here.</div>
+</section>
+
+<section class="panel">
+  <h3 style="margin:0">Focus Timer</h3>
+  <div class="row"><input id="studyM" type="number" min="1" value="25" /><input id="breakM" type="number" min="1" value="5" /></div>
+  <div id="timer" class="timer">25:00</div>
+  <div class="row"><button id="startPause">Start</button><button id="skip">Skip</button><button id="reset">Reset</button></div>
+  <div id="mode" class="min">Mode: Study</div>
+</section>
+
+<section class="panel">
+  <h3 style="margin:0">Pro Tools: Study Games + YouTube</h3>
+  <p class="min">Unlocked in admin/pro mode. Add Quizlet/Gimkit links and topic videos.</p>
+  <div id="proGate" class="warn">🔒 Pro tools locked. Login as admin or pro account.</div>
+  <input id="quizletLink" placeholder="Quizlet set URL" />
+  <input id="gimkitLink" placeholder="Gimkit URL" />
+  <button id="loadGames">Load Games</button>
+  <div id="gamesArea"></div>
+  <input id="youtubeQuery" placeholder="YouTube search topic" />
+  <button id="loadYoutube">Load YouTube Study Videos</button>
+  <div id="youtubeArea"></div>
+</section>
+
+<section class="panel" style="grid-column:1/-1">
+  <h3 style="margin:0">Memory Tools (New)</h3>
+  <div class="row">
+    <button id="buildFlashRecall">Generate Active Recall Questions</button>
+    <button id="buildMnemonics">Generate Mnemonics</button>
+    <button id="buildReviewPlan">Build Spaced Review Plan</button>
+  </div>
+  <div id="recallArea" class="min">Recall questions appear here.</div>
+  <div id="mnemonicArea" class="min">Mnemonics appear here.</div>
+  <div id="reviewPlanArea" class="min">Review plan appears here.</div>
+</section>
+
+<section class="panel" style="grid-column:1/-1">
+  <h3 style="margin:0">Retyping Practice (Learn by Rewriting)</h3>
+  <p class="min">Pick one sentence from your notes, hide it, then retype it from memory.</p>
+  <div class="row"><button id="startRetype">Start Retype Challenge</button><button id="checkRetype">Check Accuracy</button><button id="nextRetype">Next Sentence</button></div>
+  <div id="targetSentence" class="min">Target sentence will appear (then hide).</div>
+  <textarea id="retypeInput" placeholder="Retype the sentence from memory..."></textarea>
+  <div id="retypeScore" class="min">Accuracy score will appear here.</div>
+</section>
+
+
+
+<section class="panel" style="grid-column:1/-1">
+  <h3 style="margin:0">Study Chat (Ask / Re-clarify)</h3>
+  <p class="min">Ask questions about your notes/sources, or ask for a simpler re-clarification.</p>
+  <div id="chatLog" class="min" style="max-height:220px;overflow:auto;border:1px solid #273449;border-radius:10px;padding:8px;background:#0a1426">No messages yet.</div>
+  <input id="chatInput" placeholder="Ask: 'Explain mitochondria simply' or 'Re-clarify in 3 bullets'" />
+  <div class="row"><button id="sendChat">Send</button><button id="clarifyChat">Re-clarify Last Answer</button><button id="clearChat">Clear</button></div>
+</section>
+
+<section class="panel" style="grid-column:1/-1">
+  <h3 style="margin:0">Stripe Subscription</h3>
+  <div class="row"><input id="stripeMonthly" placeholder="Monthly Stripe Payment Link" /><input id="stripeYearly" placeholder="Yearly Stripe Payment Link" /></div>
+  <div class="row"><button id="saveStripe">Save Stripe Links</button><button id="goMonthly">Subscribe Monthly</button><button id="goYearly">Subscribe Yearly</button></div>
+</section>
+
+</div></div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
@@ -107,3 +219,77 @@ setRole(state.role); draw();
 </script>
 </body>
 </html>
+import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+
+const $=id=>document.getElementById(id), notify=(m,c='')=>$('notif').innerHTML=` • <span class='${c}'>${m}</span>`;
+const state={app:null,auth:null,db:null,user:null,sources:[],role:localStorage.getItem('role')||'free'};
+const ADMIN_EMAIL='admin@adhdstudy.app', ADMIN_PASS='AdminPro2026!';
+
+function setAccent(hex){document.documentElement.style.setProperty('--accent',hex);localStorage.setItem('themeColor',hex)}
+setAccent(localStorage.getItem('themeColor')||'#38bdf8');$('themeColor').value=localStorage.getItem('themeColor')||'#38bdf8';$('themeColor').oninput=e=>setAccent(e.target.value);
+function refreshPro(){const pro=state.role==='admin'||state.role==='pro';$('proGate').className=pro?'ok':'warn';$('proGate').textContent=pro?'✅ Pro tools unlocked':'🔒 Pro tools locked. Login as admin or pro account.';}
+
+function isUrl(v){try{new URL(v);return true;}catch{return false}}; function classify(url){if(/quizlet\.com/i.test(url)) return 'quizlet'; if(/gimkit\.com/i.test(url)) return 'gimkit'; if(/notebooklm\.google/i.test(url)) return 'notebooklm'; return 'web';}
+function loadCfg(){try{return JSON.parse(localStorage.getItem('firebase_cfg')||'{}')}catch{return {}}}
+$('firebaseConfig').value=localStorage.getItem('firebase_cfg')||'';
+$('saveCfg').onclick=()=>{try{JSON.parse($('firebaseConfig').value);localStorage.setItem('firebase_cfg',$('firebaseConfig').value);notify('Firebase config saved','ok')}catch{notify('Invalid Firebase config JSON','bad')}};
+$('initAuth').onclick=()=>{try{const cfg=loadCfg();if(!cfg.apiKey) throw new Error('apiKey missing');state.app=initializeApp(cfg);state.auth=getAuth(state.app);state.db=getFirestore(state.app);onAuthStateChanged(state.auth,u=>{state.user=u;$('authStatus').innerHTML=u?`<span class='ok'>Logged in: ${u.email||u.displayName}</span>`:'Not logged in.';if(u&&u.email===ADMIN_EMAIL){state.role='admin';localStorage.setItem('role','admin');}refreshPro();if(u)autoSave();});notify('Auth initialized','ok');}catch(e){$('authStatus').innerHTML=`<span class='warn'>Init failed: ${e.message}</span>`}};
+$('signupEmail').onclick=async()=>{if(!state.auth)return notify('Init auth first','warn');const e=$('email').value.trim(),p=$('password').value;if(!e||p.length<6)return notify('Use valid email + password 6+ chars','warn');try{await createUserWithEmailAndPassword(state.auth,e,p);state.role='pro';localStorage.setItem('role','pro');refreshPro();notify('Account created + Pro enabled','ok')}catch(err){notify(err.message||'Signup failed','bad')}};
+$('loginEmail').onclick=async()=>{if(!state.auth)return notify('Init auth first','warn');const e=$('email').value.trim(),p=$('password').value;try{await signInWithEmailAndPassword(state.auth,e,p);state.role=e===ADMIN_EMAIL?'admin':'pro';localStorage.setItem('role',state.role);refreshPro();notify('Logged in with email','ok')}catch(err){notify(err.message||'Login failed','bad')}};
+$('forgotPassword').onclick=async()=>{if(!state.auth)return notify('Init auth first','warn');const e=$('email').value.trim();if(!e)return notify('Enter email first','warn');try{await sendPasswordResetEmail(state.auth,e);notify('Password reset email sent','ok')}catch(err){notify(err.message||'Reset failed','bad')}};
+$('adminLogin').onclick=()=>{const e=$('email').value.trim(),p=$('password').value;if(e===ADMIN_EMAIL&&p===ADMIN_PASS){state.role='admin';localStorage.setItem('role','admin');$('authStatus').innerHTML="<span class='ok'>Admin demo active</span>";refreshPro();notify('Admin demo login successful','ok')}else notify('Use exact admin demo credentials shown above','warn')};
+$('loginGoogle').onclick=async()=>{if(!state.auth)return notify('Init auth first','warn');try{await signInWithPopup(state.auth,new GoogleAuthProvider());state.role='pro';localStorage.setItem('role','pro');refreshPro();notify('Google login success','ok')}catch{notify('Google login failed','bad')}};
+$('loginGithub').onclick=async()=>{if(!state.auth)return notify('Init auth first','warn');try{await signInWithPopup(state.auth,new GithubAuthProvider());state.role='pro';localStorage.setItem('role','pro');refreshPro();notify('GitHub login success','ok')}catch{notify('GitHub login failed','bad')}};
+$('logout').onclick=async()=>{if(state.auth) await signOut(state.auth); state.role='free';localStorage.setItem('role','free');refreshPro();notify('Logged out','warn')};
+
+function renderSources(){ $('sourceList').innerHTML=state.sources.length?state.sources.map(s=>`<div><span class='badge'>${s.type}</span>${s.label||s.url||s.name}</div>`).join(''):'No sources yet.'; }
+$('addSourceLink').onclick=()=>{const url=$('sourceLink').value.trim();if(!isUrl(url)) return notify('Enter valid URL','warn');state.sources.push({type:classify(url),url,label:url});$('sourceLink').value='';renderSources();autoSave();notify('Source added','ok')};
+$('uploadAny').onclick=()=>$('anyFile').click();$('anyFile').onchange=async e=>{for(const f of [...e.target.files]){const item={type:'file',name:f.name,size:f.size,mime:f.type||'unknown'};if(f.type.startsWith('text/')||/json|xml|csv/.test(f.type)||/\.md$|\.txt$/i.test(f.name)){$('notes').value += `\n\n[${f.name}]\n`+(await f.text()).slice(0,12000);}state.sources.push(item);}renderSources();autoSave();notify('Files ingested','ok')};
+
+async function verifiedSearch(q){const [w,o,c]=await Promise.all([fetch(`https://en.wikipedia.org/w/rest.php/v1/search/title?q=${encodeURIComponent(q)}&limit=5`).then(r=>r.json()).catch(()=>({pages:[]})),fetch(`https://api.openalex.org/works?search=${encodeURIComponent(q)}&per-page=3`).then(r=>r.json()).catch(()=>({results:[]})),fetch(`https://api.crossref.org/works?query=${encodeURIComponent(q)}&rows=3`).then(r=>r.json()).catch(()=>({message:{items:[]}}))]);return [...(w.pages||[]).map(p=>({title:p.title,source:'Wikipedia',url:`https://en.wikipedia.org/wiki/${encodeURIComponent(p.key||p.title)}`})),...(o.results||[]).map(r=>({title:r.display_name,source:'OpenAlex',url:r.id})),...(c.message?.items||[]).map(i=>({title:i.title?.[0]||'Untitled',source:'Crossref',url:i.URL||''}))].slice(0,10)}
+let t=null;$('search').oninput=()=>{clearTimeout(t);const q=$('search').value.trim();if(!q){$('results').classList.add('hidden');return;}t=setTimeout(async()=>{const data=await verifiedSearch(q);$('results').innerHTML=data.map((r,i)=>`<div class='result' data-i='${i}'><b>${r.title}</b><div class='min'>${r.source}</div></div>`).join('');$('results').dataset.items=JSON.stringify(data);$('results').classList.remove('hidden');notify('Search complete','ok');},300)};
+$('results').onclick=e=>{const row=e.target.closest('.result');if(!row)return;const item=JSON.parse($('results').dataset.items||'[]')[row.dataset.i];$('topic').value=item.title;state.sources.push({type:'verified',source:item.source,label:item.title,url:item.url});renderSources();$('results').classList.add('hidden');autoSave();notify('Verified source added','ok')};
+
+$('buildSummary').onclick=()=>{$('summary').innerHTML=$('notes').value?$('notes').value.split(/\n|\.\s+/).filter(Boolean).slice(0,10).map((x,i)=>`${i+1}. ${x.trim()}`).join('<br>'):'Add notes first.';notify('Summary built','ok')};
+
+$('loadGames').onclick=()=>{if(!(state.role==='admin'||state.role==='pro')) return notify('Pro tools locked','warn');const q=$('quizletLink').value.trim(),g=$('gimkitLink').value.trim();let html='';if(isUrl(q)) html+=`<iframe src='${q}' title='Quizlet game'></iframe>`;if(isUrl(g)) html+=`<iframe src='${g}' title='Gimkit game'></iframe>`;$('gamesArea').innerHTML=html||'<div class="min">Add valid Quizlet/Gimkit links.</div>';notify('Games loaded','ok')};
+$('loadYoutube').onclick=()=>{if(!(state.role==='admin'||state.role==='pro')) return notify('Pro tools locked','warn');const q=encodeURIComponent(($('youtubeQuery').value||$('topic').value||'study tips').trim());$('youtubeArea').innerHTML=`<iframe src='https://www.youtube.com/embed?listType=search&list=${q}' title='YouTube study videos' allowfullscreen></iframe>`;notify('YouTube videos loaded','ok')};
+
+async function saveCloud(){if(!state.user||!state.db)return;await setDoc(doc(state.db,'users',state.user.uid,'app','state'),{topic:$('topic').value,notes:$('notes').value,sources:state.sources,studyM:$('studyM').value,breakM:$('breakM').value,stripeM:$('stripeMonthly').value,stripeY:$('stripeYearly').value,theme:$('themeColor').value,role:state.role,updatedAt:new Date().toISOString()},{merge:true})}
+async function loadCloud(){if(!state.user||!state.db) return notify('Login first','warn');const s=await getDoc(doc(state.db,'users',state.user.uid,'app','state'));if(!s.exists()) return notify('No cloud save','warn');const d=s.data();$('topic').value=d.topic||'';$('notes').value=d.notes||'';state.sources=d.sources||[];$('studyM').value=d.studyM||25;$('breakM').value=d.breakM||5;$('stripeMonthly').value=d.stripeM||'';$('stripeYearly').value=d.stripeY||'';if(d.theme){$('themeColor').value=d.theme;setAccent(d.theme)}state.role=d.role||state.role;localStorage.setItem('role',state.role);renderSources();refreshPro();notify('Cloud loaded','ok')}
+$('loadCloud').onclick=loadCloud;$('saveNowStudy').onclick=saveCloud;let autos=null;function autoSave(){clearTimeout(autos);autos=setTimeout(saveCloud,900)};['topic','notes','studyM','breakM','stripeMonthly','stripeYearly','themeColor'].forEach(id=>$(id).addEventListener('input',autoSave));
+
+let mode='study',remain=25*60,run=false,intv=null;function draw(){const mm=String(Math.floor(remain/60)).padStart(2,'0'),ss=String(remain%60).padStart(2,'0');$('timer').textContent=`${mm}:${ss}`;$('mode').textContent=`Mode: ${mode==='study'?'Study':'Break'}`}
+function flip(){if(mode==='study'){mode='break';remain=(+$('breakM').value||5)*60;notify('Take a break','warn')}else{mode='study';remain=(+$('studyM').value||25)*60;notify('Back to focus','ok')}draw()}
+$('startPause').onclick=()=>{run=!run;$('startPause').textContent=run?'Pause':'Start';if(run){clearInterval(intv);intv=setInterval(()=>{remain--;if(remain<=0)flip();draw()},1000)}else clearInterval(intv)};$('skip').onclick=flip;$('reset').onclick=()=>{mode='study';remain=(+$('studyM').value||25)*60;run=false;clearInterval(intv);$('startPause').textContent='Start';draw()};
+
+const ls=()=>({m:localStorage.getItem('s_m')||'',y:localStorage.getItem('s_y')||''});const sl=ls();$('stripeMonthly').value=sl.m;$('stripeYearly').value=sl.y;
+$('saveStripe').onclick=()=>{if($('stripeMonthly').value&&!isUrl($('stripeMonthly').value)) return notify('Monthly link invalid','warn');if($('stripeYearly').value&&!isUrl($('stripeYearly').value)) return notify('Yearly link invalid','warn');localStorage.setItem('s_m',$('stripeMonthly').value.trim());localStorage.setItem('s_y',$('stripeYearly').value.trim());notify('Stripe links saved','ok')};
+$('goMonthly').onclick=()=>{const m=$('stripeMonthly').value||ls().m;if(!m)return notify('Add monthly link','warn');window.open(m,'_blank')};$('goYearly').onclick=()=>{const y=$('stripeYearly').value||ls().y;if(!y)return notify('Add yearly link','warn');window.open(y,'_blank')};
+
+
+
+function sentencePool(){return $('notes').value.split(/\n|\.\s+/).map(x=>x.trim()).filter(x=>x.length>20)}
+$('buildFlashRecall').onclick=()=>{const s=sentencePool().slice(0,8);$('recallArea').innerHTML=s.length?s.map((x,i)=>`Q${i+1}: Explain this in your own words -> <b>${x.slice(0,80)}...</b>`).join('<br>'):'Add more notes first.';notify('Recall questions generated','ok')};
+$('buildMnemonics').onclick=()=>{const s=sentencePool().slice(0,6);const out=s.map((x,i)=>{const words=x.split(/\s+/).filter(Boolean).slice(0,6);const ac=words.map(w=>w[0]?.toUpperCase()||'').join('');return `Mnemonic ${i+1}: <b>${ac}</b> → ${words.join(' ')}`});$('mnemonicArea').innerHTML=out.length?out.join('<br>'):'Add more notes first.';notify('Mnemonics generated','ok')};
+$('buildReviewPlan').onclick=()=>{const base=['Today','+1 day','+3 days','+7 days','+14 days'];const s=sentencePool().slice(0,5);$('reviewPlanArea').innerHTML=s.length?s.map((x,i)=>`Item ${i+1}: ${x.slice(0,65)}...<br>${base.map(d=>`• Review ${d}`).join(' | ')}`).join('<hr style="border-color:#273449">'):'Add more notes first.';notify('Spaced review plan generated','ok')};
+
+let retypeList=[], retypeIndex=0, activeTarget='';
+function pickRetype(){if(!retypeList.length){$('targetSentence').textContent='No sentence available. Add richer notes first.';return;}activeTarget=retypeList[retypeIndex%retypeList.length];$('targetSentence').textContent='Memorize this for 5 seconds: '+activeTarget;setTimeout(()=>{$('targetSentence').textContent='Now retype from memory in the box below.';},5000);$('retypeInput').value='';$('retypeScore').textContent='Type it, then click Check Accuracy.'}
+function similarity(a,b){a=a.trim().toLowerCase();b=b.trim().toLowerCase();if(!a||!b)return 0;const aw=a.split(/\s+/), bw=b.split(/\s+/);let hits=0;for(const w of aw) if(bw.includes(w)) hits++;return Math.round((2*hits/(aw.length+bw.length))*100)}
+$('startRetype').onclick=()=>{retypeList=sentencePool();retypeIndex=0;pickRetype();notify('Retype challenge started','ok')};
+$('nextRetype').onclick=()=>{if(!retypeList.length) retypeList=sentencePool();retypeIndex++;pickRetype()};
+$('checkRetype').onclick=()=>{if(!activeTarget)return;const score=similarity(activeTarget,$('retypeInput').value);$('retypeScore').innerHTML=`Accuracy: <b>${score}%</b>${score>=85?' ✅ Great memory!':' — review and retry.'}`;notify('Retype scored','ok')};
+
+
+
+const chatState={messages:[],lastAnswer:''};
+function pushChat(role,text){chatState.messages.push({role,text,time:new Date().toLocaleTimeString()});const html=chatState.messages.map(m=>`<div style="margin:.35rem 0"><b>${m.role==='user'?'You':'Tutor'}</b> <span class='min'>${m.time}</span><br>${m.text}</div>`).join('');$('chatLog').innerHTML=html;$('chatLog').scrollTop=$('chatLog').scrollHeight;}
+function searchRelevant(query){const corpus=[$('topic').value,$('notes').value,state.sources.map(s=>s.label||s.url||s.name).join('\n')].join('\n');const lines=corpus.split(/\n|\.\s+/).map(x=>x.trim()).filter(Boolean);const q=query.toLowerCase().split(/\s+/).filter(w=>w.length>2);const scored=lines.map(l=>({l,score:q.reduce((a,w)=>a+(l.toLowerCase().includes(w)?1:0),0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,5).map(x=>x.l);return scored;}
+function buildAnswer(question,mode='normal'){const rel=searchRelevant(question);if(!rel.length)return 'I could not find matching details in your notes yet. Add more notes/sources, then ask again.';if(mode==='clarify'){return 'Simpler re-clarification:\n- '+rel.slice(0,3).map(x=>x.slice(0,140)).join('\n- ');}return `Answer based on your study materials:\n${rel.map((x,i)=>`${i+1}) ${x.slice(0,160)}`).join('\n')}\n\nTip: Ask "re-clarify" if you want this even simpler.`;}
+$('sendChat').onclick=()=>{const q=$('chatInput').value.trim();if(!q)return;pushChat('user',q);const a=buildAnswer(q);chatState.lastAnswer=a;pushChat('assistant',a);$('chatInput').value='';notify('Chat answered','ok')};
+$('clarifyChat').onclick=()=>{if(!chatState.lastAnswer)return notify('No answer yet','warn');const a=buildAnswer(chatState.lastAnswer,'clarify');chatState.lastAnswer=a;pushChat('assistant',a);notify('Re-clarified','ok')};
+$('clearChat').onclick=()=>{chatState.messages=[];$('chatLog').textContent='No messages yet.';notify('Chat cleared','warn')};
+renderSources();draw();refreshPro();
+</script>
+</body></html>
