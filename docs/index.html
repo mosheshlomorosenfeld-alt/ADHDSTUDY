@@ -28,6 +28,8 @@
 <div class="top">🔔 Welcome to ADHD Study Companion <span id="notif" class="min">Ready.</span></div>
 
 <div style="margin:8px 0 14px"><a href="index.html">Home</a> · <a href="about.html">About</a> · <a href="tools.html">Tools</a> · <a href="sources.html">Sources</a> · <a href="pricing.html">Pricing</a></div>
+<div id="authPage" class="container">
+  <section class="card hero">
 
 <div class="card" style="padding:10px;margin:0 0 12px">
   <div class="row">
@@ -46,6 +48,7 @@
   </section>
 
   <div class="auth-layout" style="margin-top:12px">
+    <section class="card auth-box">
     <section class="card auth-box tab-pane" id="tab-settings">
       <h2 style="margin:.2rem 0" data-i18n="signin">Sign in</h2>
       <div class="row"><select id="lang"><option value="en">English</option><option value="he">עברית</option><option value="arc">Aramaic Support</option></select><button id="toggleRtl">RTL/LTR</button></div>
@@ -58,6 +61,7 @@
       <div id="authStatus" class="min">Not initialized.</div>
     </section>
 
+    <section class="card auth-box">
     <section class="card auth-box tab-pane" id="tab-sources">
       <h3 style="margin:.2rem 0">What you get</h3>
       <div class="feature">✅ Focus timer + break cycles</div>
@@ -77,6 +81,8 @@
     <section class="card tool col-6"><h3 data-i18n="sources_notes">Sources + Notes</h3><input id="topic" placeholder="Topic"/><textarea id="notes" placeholder="Paste notes..."></textarea><div class="row"><button id="buildSummary">Build Summary</button><button id="saveNowStudy">Save</button></div><div id="summary" class="min"></div></section>
     <section class="card tool col-6"><h3 data-i18n="jewish_sources">Jewish Topic Sources</h3><p class="min" data-i18n="jewish_hint">If topic is Jewish/Torah related, we prioritize reliable Torah sources.</p><div class="row"><button id="detectJewish">Detect Topic</button><button id="openJewishSources">Open Sources</button></div><div id="jewishStatus" class="min">Not detected yet.</div><div id="jewishLinks" class="min"></div><input id="shiurQuery" placeholder="Search YUTorah shiur keyword"/><button id="openYUTorah">Open YUTorah Search</button></section>
     <section class="card tool col-6"><h3>Focus Timer</h3><div class="row"><input id="studyM" type="number" value="25" min="1"/><input id="breakM" type="number" value="5" min="1"/></div><div id="timer" class="timer">25:00</div><div class="row"><button id="startPause">Start</button><button id="skip">Skip</button><button id="reset">Reset</button></div><div id="mode" class="min">Mode: Study</div></section>
+    <section class="card tool col-6 gate"><h3>Memory Tools <span class="badge">Pro</span></h3><div id="memoryGateTip" class="gate-tip">Upgrade to unlock unlimited use</div><div id="memoryGateContent"><div class="row"><button id="buildFlashRecall">Recall Qs</button><button id="buildMnemonics">Mnemonics</button><button id="buildReviewPlan">Review Plan</button></div><div id="recallArea" class="min"></div><div id="mnemonicArea" class="min"></div><div id="reviewPlanArea" class="min"></div></div><button id="demoMemory">Try 1 Demo</button></section>
+    <section class="card tool col-12"><h3>Retyping Practice</h3><div class="row"><button id="startRetype">Start</button><button id="checkRetype">Check</button><button id="nextRetype">Next</button></div><div id="targetSentence" class="min"></div><textarea id="retypeInput" placeholder="Retype from memory..."></textarea><div id="retypeScore" class="min"></div></section>
     <section id="tab-memory" class="card tool col-6 gate tab-pane"><h3>Memory Tools <span class="badge">Pro</span></h3><div id="memoryGateTip" class="gate-tip">Upgrade to unlock unlimited use</div><div id="memoryGateContent"><div class="row"><button id="buildFlashRecall">Recall Qs</button><button id="buildMnemonics">Mnemonics</button><button id="buildReviewPlan">Review Plan</button></div><div id="recallArea" class="min"></div><div id="mnemonicArea" class="min"></div><div id="reviewPlanArea" class="min"></div></div><button id="demoMemory">Try 1 Demo</button></section>
     <section id="tab-retype" class="card tool col-12 tab-pane"><h3>Retyping Practice</h3><div class="row"><button id="startRetype">Start</button><button id="checkRetype">Check</button><button id="nextRetype">Next</button></div><div id="targetSentence" class="min"></div><textarea id="retypeInput" placeholder="Retype from memory..."></textarea><div id="retypeScore" class="min"></div></section>
   </div>
