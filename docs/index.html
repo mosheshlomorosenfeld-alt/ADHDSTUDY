@@ -20,6 +20,8 @@
     .badge{display:inline-block;padding:.18rem .55rem;border-radius:999px;border:1px solid #46546c;background:#0e1c31;color:#bfdbfe;font-size:.76rem}
     .tool{padding:14px}.tool h3{margin:.2rem 0 .5rem}
     .locked{filter:blur(2.7px) saturate(.8);pointer-events:none}.gate{position:relative}.gate-tip{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;background:rgba(3,8,20,.5);border:1px dashed #475569;border-radius:12px;opacity:0;transition:.15s}.gate:hover .gate-tip{opacity:1}
+  
+.tab-pane{display:none}.tab-pane.active{display:block}.tab-btn{white-space:nowrap}
   </style>
 </head>
 <body>
@@ -28,6 +30,18 @@
 <div style="margin:8px 0 14px"><a href="index.html">Home</a> · <a href="about.html">About</a> · <a href="tools.html">Tools</a> · <a href="sources.html">Sources</a> · <a href="pricing.html">Pricing</a></div>
 <div id="authPage" class="container">
   <section class="card hero">
+
+<div class="card" style="padding:10px;margin:0 0 12px">
+  <div class="row">
+    <button class="tab-btn" data-tab="tab-dashboard">Dashboard</button>
+    <button class="tab-btn" data-tab="tab-memory">Memory Lab</button>
+    <button class="tab-btn" data-tab="tab-retype">Retype Drill</button>
+    <button class="tab-btn" data-tab="tab-sources">Sources</button>
+    <button class="tab-btn" data-tab="tab-settings">Settings</button>
+  </div>
+</div>
+<div id="authPage" class="container">
+  <section id="tab-dashboard" class="card hero tab-pane">
     <h1>ADHD Study Companion</h1>
     <p class="min">Version: v2 UI refresh • New PR track</p>
     <p>Designed for focus, memory, and fast studying with supportive tools for Hebrew/Aramaic workflows.</p>
@@ -35,6 +49,7 @@
 
   <div class="auth-layout" style="margin-top:12px">
     <section class="card auth-box">
+    <section class="card auth-box tab-pane" id="tab-settings">
       <h2 style="margin:.2rem 0" data-i18n="signin">Sign in</h2>
       <div class="row"><select id="lang"><option value="en">English</option><option value="he">עברית</option><option value="arc">Aramaic Support</option></select><button id="toggleRtl">RTL/LTR</button></div>
       <textarea id="firebaseConfig" placeholder="Paste Firebase config JSON once"></textarea>
@@ -47,6 +62,7 @@
     </section>
 
     <section class="card auth-box">
+    <section class="card auth-box tab-pane" id="tab-sources">
       <h3 style="margin:.2rem 0">What you get</h3>
       <div class="feature">✅ Focus timer + break cycles</div>
       <div class="feature">✅ Memory tools + retyping drills</div>
@@ -67,6 +83,8 @@
     <section class="card tool col-6"><h3>Focus Timer</h3><div class="row"><input id="studyM" type="number" value="25" min="1"/><input id="breakM" type="number" value="5" min="1"/></div><div id="timer" class="timer">25:00</div><div class="row"><button id="startPause">Start</button><button id="skip">Skip</button><button id="reset">Reset</button></div><div id="mode" class="min">Mode: Study</div></section>
     <section class="card tool col-6 gate"><h3>Memory Tools <span class="badge">Pro</span></h3><div id="memoryGateTip" class="gate-tip">Upgrade to unlock unlimited use</div><div id="memoryGateContent"><div class="row"><button id="buildFlashRecall">Recall Qs</button><button id="buildMnemonics">Mnemonics</button><button id="buildReviewPlan">Review Plan</button></div><div id="recallArea" class="min"></div><div id="mnemonicArea" class="min"></div><div id="reviewPlanArea" class="min"></div></div><button id="demoMemory">Try 1 Demo</button></section>
     <section class="card tool col-12"><h3>Retyping Practice</h3><div class="row"><button id="startRetype">Start</button><button id="checkRetype">Check</button><button id="nextRetype">Next</button></div><div id="targetSentence" class="min"></div><textarea id="retypeInput" placeholder="Retype from memory..."></textarea><div id="retypeScore" class="min"></div></section>
+    <section id="tab-memory" class="card tool col-6 gate tab-pane"><h3>Memory Tools <span class="badge">Pro</span></h3><div id="memoryGateTip" class="gate-tip">Upgrade to unlock unlimited use</div><div id="memoryGateContent"><div class="row"><button id="buildFlashRecall">Recall Qs</button><button id="buildMnemonics">Mnemonics</button><button id="buildReviewPlan">Review Plan</button></div><div id="recallArea" class="min"></div><div id="mnemonicArea" class="min"></div><div id="reviewPlanArea" class="min"></div></div><button id="demoMemory">Try 1 Demo</button></section>
+    <section id="tab-retype" class="card tool col-12 tab-pane"><h3>Retyping Practice</h3><div class="row"><button id="startRetype">Start</button><button id="checkRetype">Check</button><button id="nextRetype">Next</button></div><div id="targetSentence" class="min"></div><textarea id="retypeInput" placeholder="Retype from memory..."></textarea><div id="retypeScore" class="min"></div></section>
   </div>
 </div>
 
@@ -104,6 +122,12 @@ let retype=[],idx=0,target='';function pick(){if(!retype.length){$('targetSenten
 $('startRetype').onclick=()=>{retype=sentencePool();idx=0;pick()}; $('nextRetype').onclick=()=>{idx++;pick()}; $('checkRetype').onclick=()=>{const a=target.toLowerCase().split(/\s+/),b=$('retypeInput').value.toLowerCase().split(/\s+/);let h=0;for(const w of a) if(b.includes(w)) h++;$('retypeScore').innerHTML=`Accuracy: <b>${Math.round((2*h/(a.length+b.length||1))*100)}%</b>`};
 async function saveCloud(){if(!state.user||!state.db)return;await setDoc(doc(state.db,'users',state.user.uid,'app','state'),{topic:$('topic').value,notes:$('notes').value,studyM:$('studyM').value,breakM:$('breakM').value,lang:$('lang').value,updatedAt:new Date().toISOString()},{merge:true})}
 $('saveNowStudy').onclick=saveCloud; ['topic','notes','studyM','breakM','lang'].forEach(id=>$(id).addEventListener('input',()=>setTimeout(saveCloud,700)));
+
+const tabButtons=[...document.querySelectorAll('.tab-btn')];
+function showTab(id){document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active');}
+tabButtons.forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+showTab('tab-dashboard');
+
 setRole(state.role); draw();
 </script>
 </body>
