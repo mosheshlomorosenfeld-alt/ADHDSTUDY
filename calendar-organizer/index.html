@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#6c5ce7" />
+  <title>Focus Calendar — ADHD Friendly</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">FOCUS CALENDAR</p>
+        <h1>What do you need to remember?</h1>
+        <p class="subtitle">One simple place to plan. No clutter. No guilt.</p>
+      </div>
+      <button id="todayBtn" class="ghost-btn">Today</button>
+    </header>
+
+    <section class="quick-add card">
+      <div class="section-title-row">
+        <h2>Quick Add</h2>
+        <span class="hint">Keep it under 30 seconds</span>
+      </div>
+      <form id="eventForm">
+        <label>What is it?
+          <input id="title" required maxlength="120" placeholder="e.g. Physics homework" autocomplete="off" />
+        </label>
+        <div class="form-grid">
+          <label>Date
+            <input id="date" type="date" required />
+          </label>
+          <label>Start
+            <input id="startTime" type="time" required />
+          </label>
+          <label>End
+            <input id="endTime" type="time" />
+          </label>
+        </div>
+        <div class="form-grid">
+          <label>Reminder
+            <select id="reminder">
+              <option value="0">At start time</option>
+              <option value="5">5 minutes before</option>
+              <option value="15" selected>15 minutes before</option>
+              <option value="30">30 minutes before</option>
+              <option value="60">1 hour before</option>
+              <option value="1440">1 day before</option>
+            </select>
+          </label>
+          <label>Category
+            <select id="category">
+              <option>School</option>
+              <option>Music</option>
+              <option>Work</option>
+              <option>Personal</option>
+              <option>Important</option>
+            </select>
+          </label>
+        </div>
+        <label>Notes <span class="optional">optional</span>
+          <textarea id="notes" rows="2" maxlength="500" placeholder="Location, link, what to bring…"></textarea>
+        </label>
+        <button class="primary-btn" type="submit">＋ Add to my calendar</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="section-title-row">
+        <div>
+          <p class="eyebrow">UP NEXT</p>
+          <h2 id="dateHeading">Today</h2>
+        </div>
+        <button id="exportBtn" class="secondary-btn">Export .ics</button>
+      </div>
+      <div id="eventList" class="event-list"></div>
+    </section>
+
+    <section class="card settings">
+      <div class="section-title-row">
+        <div>
+          <p class="eyebrow">REMINDERS</p>
+          <h2>Email reminders</h2>
+        </div>
+        <span class="status-pill" id="emailStatus">Not configured</span>
+      </div>
+      <p class="muted">Your calendar file can create alerts in Apple Calendar, Google Calendar, Outlook, and other apps. Scheduled email reminders require a small email service/backend so your email address and credentials stay private.</p>
+      <div class="form-grid">
+        <label>Email address
+          <input id="email" type="email" placeholder="you@example.com" />
+        </label>
+        <label>Daily digest
+          <select id="digestTime">
+            <option value="off">Off</option>
+            <option value="07:00">7:00 AM</option>
+            <option value="08:00" selected>8:00 AM</option>
+            <option value="09:00">9:00 AM</option>
+          </select>
+        </label>
+      </div>
+      <button id="saveSettings" class="secondary-btn">Save reminder settings</button>
+    </section>
+
+    <footer>
+      <span>Designed for an ADHD brain 🧠</span>
+      <button id="clearBtn" class="text-btn">Clear all events</button>
+    </footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
